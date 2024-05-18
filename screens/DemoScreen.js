@@ -1,13 +1,12 @@
-// screens/DemoScreen.js
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import LottieView from 'lottie-react-native';
-
+import Gif from '../assets/Animation.gif';
 const DemoScreen = () => {
   return (
     <View style={styles.container}>
       <LottieView
-        source={require('../assets/Animation-1716057036329.json')}
+        source={Gif}
         autoPlay
         loop
       />
