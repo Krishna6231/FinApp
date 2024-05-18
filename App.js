@@ -3,7 +3,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from './screens/HomeScreen';
-import DemoScreen from './screens/DemoScreen';
 import LoginScreen from './screens/LoginScreen';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -14,7 +13,6 @@ const HomeStack = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Home" options={{ headerShown: false }} component={HomeScreen} />
-      <Stack.Screen name="Demo" component={DemoScreen} />
     </Stack.Navigator>
   );
 };
