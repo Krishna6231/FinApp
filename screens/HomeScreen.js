@@ -2,6 +2,7 @@
 import React from 'react';
 import { View, Button, StyleSheet } from 'react-native';
 import NavBar from './NavBar';
+import DemoScreen from './DemoScreen';
 
 const HomeScreen = ({ navigation }) => {
   return (
@@ -10,15 +11,21 @@ const HomeScreen = ({ navigation }) => {
       <NavBar navigation={navigation}/>
       </View>
       
+
+      <View>
+        <DemoScreen style={styles.container}/>
+      </View>
+      <View>
       <Button
-        title="Go to Demo Screen"
+        title="Sign Up"
         onPress={() => navigation.navigate('Demo')}
-      />
+      /> 
       
-       {/* <Button
+        <Button
         title="Login"
         onPress={() => navigation.navigate('Login')}
-      /> */}
+      />
+      </View>
     </View>
   );
 };

@@ -2,7 +2,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import LottieView from 'lottie-react-native';
-import LottiePlayer from '@dotlottie/react-player';
+//import LottiePlayer from '@dotlottie/react-player';
 
 
 const DemoScreen = () => {
@@ -24,8 +24,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   giff: {
-    width: 200,
-    height: 200,
+    marginTop: 375,
+    width: 300,
+    height: 350,
   }
 });
 
