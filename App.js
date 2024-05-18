@@ -12,7 +12,7 @@ const Tab = createBottomTabNavigator();
 
 const HomeStack = () => {
   return (
-    <Stack.Navigator initialRouteName="Home">
+    <Stack.Navigator>
       <Stack.Screen name="Home" options={{ headerShown: false }} component={HomeScreen} />
       <Stack.Screen name="Demo" component={DemoScreen} />
     </Stack.Navigator>

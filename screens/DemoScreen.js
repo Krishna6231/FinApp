@@ -2,12 +2,14 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import LottieView from 'lottie-react-native';
+import LottiePlayer from '@dotlottie/react-player';
+
 
 const DemoScreen = () => {
   return (
     <View style={styles.container}>
-      <LottieView
-        source={require('../assets/Animation-1716057036329.json')}
+      <LottieView style={styles.giff}
+        source={require('../assets/Animation.json')}
         autoPlay
         loop
       />
@@ -21,6 +23,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  giff: {
+    width: 200,
+    height: 200,
+  }
 });
 
 export default DemoScreen;
