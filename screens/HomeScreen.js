@@ -33,22 +33,6 @@ const HomeScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   
-  navBar: {
-    height: 56,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: 'black',
-    paddingHorizontal: 15,
-  },
-  iconContainer: {
-    padding: 5,
-  },
-  title: {
-    color: 'white',
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
   google: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -83,7 +67,7 @@ const styles = StyleSheet.create({
   },
   button: {
     width: 250,
-    height: 50,
+    height: 51,
     backgroundColor: '#a881af',
     borderRadius: 10,
     alignItems: 'center',
