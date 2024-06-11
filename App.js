@@ -3,7 +3,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from './screens/HomeScreen';
-import LoginScreen from './screens/LoginScreen';
+import Settings from './screens/SettingsScreen';
+import LoginStackNavigator from './screens/LoginStackNavigator';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 const Stack = createNativeStackNavigator();
@@ -12,11 +13,12 @@ const Tab = createBottomTabNavigator();
 const HomeStack = () => {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Login" options={{ headerShown: false }} component={LoginScreen} />
+      <Stack.Screen name="Settings" options={{ headerShown: false }} component={Settings} />
       <Stack.Screen name="Home" options={{ headerShown: false }} component={HomeScreen} />
     </Stack.Navigator>
   );
 };
+
 
 const App = () => {
   return (
@@ -28,15 +30,15 @@ const App = () => {
 
             if (route.name === 'MainHome') {
               iconName = 'home';
-            } else if (route.name === 'Login') {
-              iconName = 'person-outline';
-            }
+            } else if (route.name === 'Settings') {
+              iconName = 'settings';
+            } 
 
             return <Icon name={iconName} size={size} color={color} />;
           },
         })}>
-        <Tab.Screen name="MainHome" options={{headerShown: false}}component={HomeScreen} />
-        <Tab.Screen name="Login" component={LoginScreen} />
+        <Tab.Screen name="MainHome" options={{headerShown: false}} component={LoginStackNavigator} />
+        <Tab.Screen name="Settings" options={{headerShown: false}} component={Settings} />
       </Tab.Navigator>
     </NavigationContainer>
   );

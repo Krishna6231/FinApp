@@ -1,33 +1,35 @@
 // screens/LoginScreen.js
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Button, Pressable } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Button, Alert } from 'react-native';
 import LottieView from 'lottie-react-native';
 import { useNavigation } from '@react-navigation/native';
 
-const LoginScreen = () => {
+const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
   const navigation = useNavigation();
 
   const handleSubmit = () => {
-    if (email && password) {
-      // good to go
-      navigation.navigate('Lobby');
-    } else {
-      // handle error
-      console.log("Email and password must not be empty");
+    if (!email || !password || !confirmPassword) {
+      Alert.alert("Error", "Email, password, and confirmation password must not be empty");
+      return;
     }
-  };
 
-  const handleSignupNavigation = () => {
-    navigation.navigate('Signup');
+    if (password !== confirmPassword) {
+      Alert.alert("Error", "Passwords do not match");
+      return;
+    }
+
+    // If email and passwords are valid, navigate to the Lobby screen
+    navigation.navigate('Lobby');
   };
 
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
+      <Text style={styles.title}>Sign Up</Text>
       <View style={styles.animationContainer}>
         <LottieView
           style={styles.animation}
@@ -52,13 +54,15 @@ const LoginScreen = () => {
           onChangeText={setPassword}
           secureTextEntry
         />
-        <Button style={styles.button} title="Login" onPress={handleSubmit} />
-        <View style={styles.signupContainer}>
-          <Text>Do not have an account? </Text>
-          <Pressable onPress={handleSignupNavigation}>
-            <Text style={styles.signtext}>Sign Up</Text>
-          </Pressable>
-        </View>
+        <Text style={styles.label}>Confirm Password</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Re-enter the password"
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+          secureTextEntry
+        />
+        <Button style={styles.button} title="Sign Up" onPress={handleSubmit} />
       </View>
     </View>
   );
@@ -105,16 +109,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     marginBottom: 15,
-  },
-  signupContainer: {
-    justifyContent: 'center',
-    margin: 10,
-    alignItems: 'center',
-  },
-  signtext: {
-    fontStyle: 'italic',
-    textDecorationLine: "underline",
-  },
+  }
 });
 
-export default LoginScreen;
+export default Signup;

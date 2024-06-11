@@ -3,8 +3,16 @@
 import React from 'react';
 import { View, Text, StyleSheet, StatusBar, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { useNavigation } from '@react-navigation/native';
 
-const NavBar = ({navigation}) => {
+
+const NavBar = () => {
+  const navigation = useNavigation();
+
+  const handleLoginNavigation = () => {
+    navigation.navigate('Login'); // Navigate to Login
+  };
+
   return (
     <View style={styles.navBar}>
     <StatusBar barStyle="light-content" />
@@ -12,7 +20,7 @@ const NavBar = ({navigation}) => {
       <Icon name="menu" size={28} color="white" />
     </TouchableOpacity>
     <Text style={styles.title}>Finance</Text>
-    <TouchableOpacity style={styles.iconContainer} onPress={() => navigation.navigate('Login')}>
+    <TouchableOpacity style={styles.iconContainer} onPress={handleLoginNavigation}>
       <Icon name="login" size={28} color="white" />
     </TouchableOpacity>
   </View>
