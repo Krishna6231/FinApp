@@ -3,6 +3,7 @@
     "name": "finance",
     "slug": "finance",
     "version": "1.0.0",
+    "scheme": "fintrack",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
