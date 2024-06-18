@@ -1,11 +1,12 @@
+// navigation/StackNavigator.js
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import HomeScreen from './HomeScreen';
-import Lobby from './Lobby';
+import HomeScreen from '../screens/HomeScreen';
+import BottomTabNavigator from './BottomTabNavigator';
 
 const Stack = createStackNavigator();
 
-const LoginStackNavigator = () => {
+const StackNavigator = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen
@@ -14,12 +15,12 @@ const LoginStackNavigator = () => {
         options={{ headerShown: false }} // Hide header for HomeScreen
       />
       <Stack.Screen
-        name="Lobby"
-        component={Lobby}
-        options={{ headerShown: false }} // Hide header for Lobby
+        name="Main"
+        component={BottomTabNavigator}
+        options={{ headerShown: false }} // Hide header for BottomTabNavigator
       />
     </Stack.Navigator>
   );
 };
 
-export default LoginStackNavigator;
+export default StackNavigator;
