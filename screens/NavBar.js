@@ -1,10 +1,10 @@
 // components/NavBar.js
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, StatusBar, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
-
+import services from '../services';
 
 const NavBar = () => {
   const navigation = useNavigation();

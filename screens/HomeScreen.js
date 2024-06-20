@@ -1,11 +1,27 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, StyleSheet, Text, Pressable, TouchableOpacity } from 'react-native';
 import LottieView from 'lottie-react-native';
 import { client } from '../KindeConfig';
 import services from '../services';
-import { CommonActions } from '@react-navigation/native'; // Import CommonActions
+import { CommonActions } from '@react-navigation/native';
 
 const HomeScreen = ({ navigation }) => {
+  const checkUserAuth = async () => {
+    const result = await services.getData('login');
+    if (result === 'true') {
+      // Navigate to the main screen if the user is already logged in
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'Main' }],
+        })
+      );
+    }
+  };
+
+  useEffect(() => {
+    checkUserAuth();
+  }, []);
 
   const handleLogin = async () => {
     try {
@@ -39,13 +55,12 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      
       <View style={styles.appNameContainer}>
         <Text style={styles.appName}>FinTrack</Text>
       </View>
 
       <View style={styles.animationContainer}>
-        <LottieView 
+        <LottieView
           style={styles.giff}
           source={require('../assets/Animation.json')}
           autoPlay
@@ -74,7 +89,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#000000',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop:30,
+    marginTop: 30,
   },
   navContainer: {
     position: 'absolute',

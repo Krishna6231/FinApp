@@ -53,9 +53,11 @@ const Lobby = () => {
 
 const styles = StyleSheet.create({
   container: {
+    fontFamily:'outfit',
+    marginTop: 30,
     flex: 1,
     backgroundColor: '#000000', // Black background color
-    paddingTop: 30, // Adjust as needed
+    paddingTop: 0, // Adjust as needed
   },
 });
 

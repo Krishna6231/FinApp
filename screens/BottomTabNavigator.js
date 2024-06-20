@@ -35,7 +35,7 @@ const BottomTabNavigator = () => {
       })}
     >
       <Tab.Screen name="Lobby" options={{ headerShown: false }} component={Lobby} />
-      <Tab.Screen name="Expense" component={Expense} />
+      <Tab.Screen name="Expense" options={{headerTitle:'Add Expense'}} component={Expense} />
 
       <Tab.Screen name="Settings" component={Settings} />
     </Tab.Navigator>
