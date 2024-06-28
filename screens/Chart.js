@@ -1,43 +1,81 @@
-import React, { Component } from 'react';
-import { StyleSheet, ScrollView, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 import PieChart from 'react-native-pie-chart';
-import {MaterialCommunityIcons} from '@expo/vector-icons';
-export default class Chart extends Component {
-  render() {
-    const widthAndHeight = 150;
-    const series = [123, 321, 123, 789, 537];
-    const sliceColor = ['#0077c2', '#00aaff', '#00e676', '#ff5252', '#ff1744']; // Custom colors with shades of blue, green, and red
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import Colors from '../assets/Colors';
 
-    return (
-      <ScrollView style={{ flex: 1 }}>
-        <View style={styles.container}>
-          <Text style={styles.title}>Total Estimate : ₹0</Text>
-          <PieChart
-            widthAndHeight={widthAndHeight}
-            series={series}
-            sliceColor={sliceColor}
-            coverRadius={0.45}
-            coverFill={'#FFF'}
-          />
-          <MaterialCommunityIcons name="checkbox-blank-circle" size={24} color='#0077c2' />
-          <Text>NA</Text>
-        </View>
-      </ScrollView>
-    );
-  }
+export default function Chart({ categoryList }) {
+  const [sliceColors, setSliceColors] = useState([]);
+  const [values, setValues] = useState([]);
+
+  useEffect(() => {
+    updateChart();
+  }, [categoryList]);
+
+  const updateChart = () => {
+    let totalValues = [];
+    let colors = [];
+    categoryList.forEach((category, index) => {
+      totalValues.push(category.budget);
+      colors.push(Colors.COLOR_LIST[index % Colors.COLOR_LIST.length]);
+    });
+    setValues(totalValues);
+    setSliceColors(colors);
+  };
+
+  const totalEstimate = values.reduce((a, b) => a + b, 0);
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Total Estimate: ₹{totalEstimate}</Text>
+      {totalEstimate > 0 ? (
+        <PieChart
+          widthAndHeight={150}
+          series={values}
+          sliceColor={sliceColors}
+          coverRadius={0.45}
+          coverFill={'#FFF'}
+        />
+      ) : (
+        <Text style={styles.noData}>No data to display</Text>
+      )}
+      <View style={styles.legendContainer}>
+        {categoryList?.map((category, index) => (
+          <View key={index} style={styles.legendItem}>
+            <MaterialCommunityIcons name="checkbox-blank-circle" size={24} color={Colors.COLOR_LIST[index % Colors.COLOR_LIST.length]} />
+            <Text style={styles.legendText}>{category.name}</Text>
+          </View>
+        ))}
+      </View>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: 'left',
     backgroundColor: '#000000',
     padding: 20,
-    left:15, // Black background color
+    alignItems: 'flex-start',
   },
   title: {
     fontSize: 20,
-    margin: 10,
-    color: '#FFFFFF', // White text color
+    marginBottom: 10,
+    color: '#FFFFFF',
+  },
+  noData: {
+    color: '#FFFFFF',
+    fontSize: 16,
+  },
+  legendContainer: {
+    marginTop: 20,
+  },
+  legendItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  legendText: {
+    color: '#FFFFFF',
+    marginLeft: 5,
   },
 });

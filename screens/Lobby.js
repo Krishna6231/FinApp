@@ -1,14 +1,18 @@
-import React, { useEffect } from 'react';
-import { View, StyleSheet, BackHandler, Alert } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, BackHandler, Alert, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { client } from '../KindeConfig';
 import { supabase } from '../SupabaseConfig';
 import Header from './Header';
 import Chart from './Chart';
+import CategoryList from './CategoryList';
+import Colors from '../assets/Colors';
+import { RefreshControl } from 'react-native-gesture-handler';
 
 const Lobby = () => {
   const navigation = useNavigation();
-
+  const [categoryList, setCategoryList] = useState([]);
+  const [loading,setLoading]= useState(false);
   useEffect(() => {
     const backAction = () => {
       Alert.alert('Hold on!', 'Are you sure you want to exit?', [
@@ -31,12 +35,15 @@ const Lobby = () => {
   }, []);
 
   const getCategoryList = async () => {
+    setLoading(true);
     const user = await client.getUserDetails();
     const { data, error } = await supabase
       .from('Category')
       .select('*')
       .eq('created_by', user.email);
-    console.log("Data", data);
+    console.log('Data', data);
+    setCategoryList(data);
+    data&&setLoading(false)
   };
 
   useEffect(() => {
@@ -44,20 +51,25 @@ const Lobby = () => {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container} refreshControl={
+      <RefreshControl
+      onRefresh={()=>getCategoryList()}
+      refreshing={loading}
+      />
+    }>
       <Header />
-      <Chart />
-    </View>
+      <Chart categoryList={categoryList} />
+      <CategoryList categoryList={categoryList} />
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    fontFamily:'outfit',
-    marginTop: 30,
     flex: 1,
-    backgroundColor: '#000000', // Black background color
-    paddingTop: 0, // Adjust as needed
+    backgroundColor: Colors.BLACK, // Use Colors.BLACK from your Colors file
+    padding: 10, // Adjust as needed
+    marginTop:30
   },
 });
 

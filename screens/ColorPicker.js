@@ -1,27 +1,41 @@
-import { View, Text } from 'react-native'
-import React from 'react'
-import Colors from '../assets/Colors'
-import { TouchableOpacity } from 'react-native-gesture-handler'
+import { View, TouchableOpacity, StyleSheet } from 'react-native';
+import React from 'react';
+import Colors from '../assets/Colors';
 
-export default function ColorPicker() {
+const ColorPicker = ({ selectedColor, setSelectedColor }) => {
   return (
-    <View style={{
-        display: 'flex',
-        flexDirection:'center',
-        gap:20,
-        marginTop:20,
-    }}>
-      {Colors.COLOR_LIST.map((color,index)=>{
-        <TouchableOpacity 
-        key={index}
-        style={{
-            height:30,
-            width:30,
-            backgroundColor: color,
-            borderRadius:99
-        }}>
-            </TouchableOpacity>
-      })}
+    <View style={styles.container}>
+      {Colors.COLOR_LIST.map((color, index) => (
+        <TouchableOpacity
+          key={index}
+          style={[
+            styles.colorCircle,
+            { backgroundColor: color },
+            selectedColor === color && styles.selected
+          ]}
+          onPress={() => setSelectedColor(color)}
+        />
+      ))}
     </View>
-  )
-}
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginVertical: 10,
+  },
+  colorCircle: {
+    width: 30,
+    height: 30,
+    borderRadius: 99,
+    marginHorizontal: 5,
+  },
+  selected: {
+    borderWidth: 5,
+    borderColor: '#000',
+  },
+});
+
+export default ColorPicker;

@@ -15,18 +15,7 @@ export default function Header() {
     const user = await client.getUserDetails();
     setUser(user);
   };
-  const handleLogout = async () => {
-    try {
-      await client.logout();
-      await services.storeData('login', 'false');
-      navigation.replace('Home'); // Navigate back to the home screen after logout
-    } catch (error) {
-      console.error("Error signing out: ", error);
-    }
-  };
-  const toggleLogout = () => {
-    setShowLogout(!showLogout);
-  };
+ 
   return (
     <View style={styles.container}>
       <View style={styles.leftContainer}>
@@ -37,15 +26,9 @@ export default function Header() {
           source={{ uri: user?.picture }}
           style={styles.userImage}
         />
-        <TouchableOpacity onPress={toggleLogout} style={styles.arrowButton}>
-          <Ionicons name={showLogout ? 'chevron-up' : 'chevron-down'} size={24} color="#FFFFFF" />
-        </TouchableOpacity>
+        
       </View>
-      {showLogout && (
-        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <Text style={styles.logoutButtonText}>Logout</Text>
-        </TouchableOpacity>
-      )}
+      
     </View>
     
   );
@@ -81,18 +64,6 @@ const styles = StyleSheet.create({
     borderColor: '#FFFFFF',
     marginLeft: 10,
   },
-  arrowButton: {
-    marginLeft: 10,
-  },
-  logoutButton: {
-    position: 'absolute',
-    right: 10,
-    top: 70,
-    backgroundColor: '#333333',
-    padding: 30,
-    borderRadius: 5,
-  },
-  logoutButtonText: {
-    color: '#FFFFFF',
-  },
+ 
+ 
 });
