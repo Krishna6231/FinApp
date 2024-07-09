@@ -1,59 +1,97 @@
-import { View, Text } from 'react-native'
-import React from 'react'
-import Colors from '../assets/Colors'
-import { Feather } from '@expo/vector-icons';
-import { StyleSheet } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import Colors from '../assets/Colors';
 import { useNavigation } from '@react-navigation/native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-export default function CategoryList({categoryList}) {
+
+
+const CategoryList = ({ categoryList }) => {
     const navigation = useNavigation();
-    const onCategoryClick=(category)=>{
-            navigation.navigate('Detail',{category});
-    }
+
+  const onCategoryClick = (category) => {
+    navigation.navigate('Detail', { category });
+  };
+
   return (
-    <View style={{marginTop:20,color:Colors.WHITE}}>
-      <Text style={{color:Colors.WHITE, fontWeight:'bold',fontSize:20}}>List</Text>
-        <View>
-            {categoryList&&categoryList.map((category,index)=>(
-                <TouchableOpacity key={index} style={styles.container} onPress={()=>onCategoryClick(category)}>
-                    <View style={styles.iconContainer}>
-                        <Text style={[styles.iconText,{backgroundColor:category?.color}]}>{category.icon}</Text>
-                        </View>
-                        <View style={styles.subContainer}>
-                            <Text style={{color:Colors.WHITE,fontWeight:"bold",fontSize:21}}>{category.name}</Text>
-                            <Text style={{color:Colors.WHITE,fontSize:21}}>₹{category.budget}</Text>
-                            </View>
-                </TouchableOpacity>
-            ))}
-        </View>
+    <View style={styles.container}>
+      <Text style={styles.title}>List</Text>
+      <View>
+      {categoryList.length > 0 ? (
+          categoryList.map((category, index) => (
+            <TouchableOpacity
+              key={index}
+              style={styles.categoryItem}
+              onPress={() => onCategoryClick(category)}
+            >
+              <View>
+                <Text style={styles.iconText}>{category.icon}</Text>
+              </View>
+              <View style={styles.subContainer}>
+                <Text style={styles.categoryName}>{category.name}</Text>
+                <Text style={styles.categoryBudget}>₹{category.budget}</Text>
+              </View>
+            </TouchableOpacity>
+          ))
+        ) : (
+          <Text style={styles.noDataText}>Add expenses to view the list</Text>
+        )}
+      </View>
     </View>
-  )
-}
+  );
+};
 
-const styles=StyleSheet.create({
-    iconText:{
-        fontSize:20,
-        padding:14,
-        borderRadius:15
-    },
-    iconContainer:{
-        justifyContent:'center',
-        alignItems:'baseline',
-    },
-    container:{
-        marginBottom:10,
-        display:'flex',
-        flexDirection:'row',
-        gap:10,
-        alignItems:'center',
+const styles = StyleSheet.create({
+  container: {
+    marginTop: 20,
+    color: Colors.WHITE,
+  },
+  title: {
+    color: Colors.WHITE,
+    fontWeight: 'bold',
+    fontSize: 20,
+    marginBottom: 15,
+  },
+  categoryItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  iconContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.GRAY,
+    borderRadius: 15,
+    marginRight: 10,
+    width: 30,
+    height: 30,
+  },
+  iconText: {
+    fontSize: 20,
+    padding: 7,
+    borderRadius: 15,
+  },
+  subContainer: {
+    display:'flex',
+    flexDirection:'row',
+    alignItems:'center',
+    justifyContent:'space-between',
+    width:'85%'
+  },
+  categoryName: {
+    color: Colors.WHITE,
+    fontWeight: 'bold',
+    fontSize: 21,
+  },
+  categoryBudget: {
+    color: Colors.WHITE,
+    fontSize: 21,
+    
+  },
+  noDataText: {
+    color: Colors.GRAY,
+    fontSize: 18,
+    textAlign: 'center',
+    marginTop: 20,
+  },
+});
 
-    },
-    subContainer:{
-        display:'flex',
-        flexDirection:'row',
-        alignItems:'center',
-        justifyContent:'space-between',
-        width:'79%'
-
-    }
-})
+export default CategoryList;

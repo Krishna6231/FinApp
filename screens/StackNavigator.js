@@ -8,6 +8,9 @@ import { Ionicons } from '@expo/vector-icons';
 import BottomTabNavigator from './BottomTabNavigator';
 import CategoryDetail from './CategoryDetail';
 import Colors from '../assets/Colors';
+import Login from './Login';
+import Test from './Test';
+import SignUp from './Signup';
 const Stack = createStackNavigator();
 
 const StackNavigator = () => {
@@ -19,6 +22,21 @@ const StackNavigator = () => {
         options={{ headerShown: false }} // Hide header for HomeScreen
       />
       <Stack.Screen
+        name="Login"
+        component={Login}
+        options={{ headerShown: false }} // Hide header for HomeScreen
+      />
+      <Stack.Screen
+        name="Signup"
+        component={SignUp}
+        options={{ headerShown: false }} // Hide header for HomeScreen
+      />
+<Stack.Screen
+        name="Test"
+        component={Test}
+        options={{ headerShown: false }} // Hide header for HomeScreen
+      />
+      <Stack.Screen
         name="Main"
         component={BottomTabNavigator}
         options={{ headerShown: false }} // Hide header for BottomTabNavigator
@@ -27,7 +45,7 @@ const StackNavigator = () => {
           name="Detail" 
           component={CategoryDetail} 
           options={({ navigation }) => ({
-            title: 'Category Detail',
+            title: 'Detail',
             headerLeft: () => (
               <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginLeft: 15 }}>
                 <Ionicons name="arrow-back" size={24} color={Colors.WHITE} />

@@ -1,115 +1,87 @@
-// screens/LoginScreen.js
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Button, Alert } from 'react-native';
-import LottieView from 'lottie-react-native';
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, TextInput, Button, StyleSheet, ActivityIndicator } from 'react-native';
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 
-const Signup = () => {
+export default function SignUp({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [displayName, setDisplayName] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const auth = getAuth();
 
-  const navigation = useNavigation();
-
-  const handleSubmit = () => {
-    if (!email || !password || !confirmPassword) {
-      Alert.alert("Error", "Email, password, and confirmation password must not be empty");
-      return;
+  const handleSignUp = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      // Update display name
+      await updateProfile(auth.currentUser, {
+        displayName: displayName.trim(),
+      });
+      // Signed up
+      const user = userCredential.user;
+      console.log('User registered:', user);
+      setLoading(false);
+      // Navigate to the login screen
+      navigation.navigate('Login');
+    } catch (error) {
+      setLoading(false);
+      setError(error.message);
+      console.error('Error during sign up:', error);
     }
-
-    if (password !== confirmPassword) {
-      Alert.alert("Error", "Passwords do not match");
-      return;
-    }
-
-    // If email and passwords are valid, navigate to the Lobby screen
-    navigation.navigate('Lobby');
   };
-
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Sign Up</Text>
-      <View style={styles.animationContainer}>
-        <LottieView
-          style={styles.animation}
-          source={require('../assets/Login.json')}
-          autoPlay
-          loop
-        />
-      </View>
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Email</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter your email"
-          value={email}
-          onChangeText={setEmail}
-        />
-        <Text style={styles.label}>Password</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter your password"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
-        <Text style={styles.label}>Confirm Password</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Re-enter the password"
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-          secureTextEntry
-        />
-        <Button style={styles.button} title="Sign Up" onPress={handleSubmit} />
-      </View>
+      <TextInput
+        value={displayName}
+        style={styles.input}
+        placeholder="Display Name"
+        autoCapitalize="words"
+        onChangeText={(text) => setDisplayName(text)}
+      />
+      <TextInput
+        value={email}
+        style={styles.input}
+        placeholder="Email"
+        autoCapitalize="none"
+        onChangeText={(text) => setEmail(text)}
+      />
+      <TextInput
+        secureTextEntry={true}
+        value={password}
+        style={styles.input}
+        placeholder="Password"
+        autoCapitalize="none"
+        onChangeText={(text) => setPassword(text)}
+      />
+      {loading ? (
+        <ActivityIndicator size="large" color="#0000ff" />
+      ) : (
+        <Button title="Sign Up" onPress={handleSignUp} />
+      )}
+      {error && <Text style={styles.errorText}>{error}</Text>}
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#ffffff',
     justifyContent: 'center',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  animationContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 30,
-  },
-  animation: {
-    width: 300,
-    height: 300,
-  },
-  inputContainer: {
-    marginVertical: 20,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 5,
+    padding: 16,
+    backgroundColor: '#fff',
   },
   input: {
-    backgroundColor: '#f0f0f0',
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 15,
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    marginBottom: 12,
+    paddingHorizontal: 8,
   },
-  button: {
-    backgroundColor: 'black',
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 15,
-  }
+  errorText: {
+    color: 'red',
+    marginTop: 10,
+  },
 });
-
-export default Signup;

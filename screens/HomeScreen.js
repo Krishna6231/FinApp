@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { View, StyleSheet, Text, Pressable, TouchableOpacity } from 'react-native';
 import LottieView from 'lottie-react-native';
-import { client } from '../KindeConfig';
 import services from '../services';
 import { CommonActions } from '@react-navigation/native';
 
@@ -23,36 +22,6 @@ const HomeScreen = ({ navigation }) => {
     checkUserAuth();
   }, []);
 
-  const handleLogin = async () => {
-    try {
-      const token = await client.login();
-      if (token) {
-        // User was authenticated
-        await services.storeData('login', 'true');
-        navigation.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [{ name: 'Main' }],
-          })
-        ); // Reset the navigation stack
-      } else {
-        // Handle authentication failure
-        console.log("Authentication failed");
-      }
-    } catch (error) {
-      console.error("Error during authentication:", error);
-      // Handle authentication error
-    }
-  };
-
-  const handleSignUp = async () => {
-    const token = await client.register();
-    if (token) {
-      // User was authenticated
-      navigation.navigate('Auth'); // Navigate to the "Auth" screen for web authentication
-    }
-  };
-
   return (
     <View style={styles.container}>
       <View style={styles.appNameContainer}>
@@ -69,12 +38,12 @@ const HomeScreen = ({ navigation }) => {
       </View>
 
       <View style={styles.loginContainer}>
-        <TouchableOpacity onPress={handleLogin} style={styles.button}>
+        <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.button}>
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
         <View style={styles.signupContainer}>
           <Text style={styles.signupText}>Do not have an account? </Text>
-          <Pressable onPress={handleSignUp}>
+          <Pressable onPress={() => navigation.navigate('Signup')}>
             <Text style={styles.signtext}>Sign Up</Text>
           </Pressable>
         </View>

@@ -4,70 +4,86 @@ import PieChart from 'react-native-pie-chart';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Colors from '../assets/Colors';
 
-export default function Chart({ categoryList }) {
+const Chart = ({ categoryList, userEmail }) => {
   const [sliceColors, setSliceColors] = useState([]);
   const [values, setValues] = useState([]);
 
   useEffect(() => {
     updateChart();
-  }, [categoryList]);
+  }, [categoryList, userEmail]);
 
   const updateChart = () => {
     let totalValues = [];
     let colors = [];
-    categoryList.forEach((category, index) => {
-      totalValues.push(category.budget);
-      colors.push(Colors.COLOR_LIST[index % Colors.COLOR_LIST.length]);
+    const filteredCategories = categoryList.filter(category => category.created_by === userEmail);
+    filteredCategories.forEach((category) => {
+      totalValues.push(parseFloat(category.budget) || 0);
+      colors.push(category.color);
     });
     setValues(totalValues);
     setSliceColors(colors);
   };
 
-  const totalEstimate = values.reduce((a, b) => a + b, 0);
+  const totalEstimate = values.reduce((a, b) => a + b, 0).toFixed(2);
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Total Estimate: ₹{totalEstimate}</Text>
-      {totalEstimate > 0 ? (
-        <PieChart
-          widthAndHeight={150}
-          series={values}
-          sliceColor={sliceColors}
-          coverRadius={0.45}
-          coverFill={'#FFF'}
-        />
-      ) : (
-        <Text style={styles.noData}>No data to display</Text>
-      )}
-      <View style={styles.legendContainer}>
-        {categoryList?.map((category, index) => (
-          <View key={index} style={styles.legendItem}>
-            <MaterialCommunityIcons name="checkbox-blank-circle" size={24} color={Colors.COLOR_LIST[index % Colors.COLOR_LIST.length]} />
-            <Text style={styles.legendText}>{category.name}</Text>
-          </View>
-        ))}
+      <View style={styles.chartContainer}>
+        {parseFloat(totalEstimate) > 0 ? (
+          <PieChart
+            widthAndHeight={150}
+            series={values}
+            sliceColor={sliceColors}
+            coverRadius={0.45}
+            coverFill={'#FFF'}
+          />
+        ) : (
+<PieChart
+            widthAndHeight={150}
+            series={[1]}  // One slice
+            sliceColor={['#808080']}  // Grey color
+            coverRadius={0.45}
+            coverFill={'#FFF'}
+          />        )}
+        <View style={styles.legendContainer}>
+          {categoryList?.map((category, index) => (
+            <View key={index} style={styles.legendItem}>
+              <MaterialCommunityIcons name="checkbox-blank-circle" size={24} color={category.color} />
+              <Text style={styles.legendText}>{category.name}</Text>
+            </View>
+          ))}
+        </View>
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#000000',
     padding: 20,
-    alignItems: 'flex-start',
+    alignItems: 'center',
+    width: '100%',
   },
   title: {
     fontSize: 20,
-    marginBottom: 10,
+    marginBottom: 20,
     color: '#FFFFFF',
+    fontWeight: 'bold',
+  },
+  chartContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
   },
   noData: {
     color: '#FFFFFF',
     fontSize: 16,
   },
   legendContainer: {
-    marginTop: 20,
+    marginLeft: 20,
   },
   legendItem: {
     flexDirection: 'row',
@@ -79,3 +95,5 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
 });
+
+export default Chart;

@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, BackHandler, Alert, ScrollView } from 'react-native';
+import { View, StyleSheet, BackHandler, Alert, ScrollView, RefreshControl } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { client } from '../KindeConfig';
 import { supabase } from '../SupabaseConfig';
 import Header from './Header';
 import Chart from './Chart';
 import CategoryList from './CategoryList';
 import Colors from '../assets/Colors';
-import { RefreshControl } from 'react-native-gesture-handler';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 const Lobby = () => {
   const navigation = useNavigation();
   const [categoryList, setCategoryList] = useState([]);
-  const [loading,setLoading]= useState(false);
+  const [loading, setLoading] = useState(false);
+  const [userEmail, setUserEmail] = useState('');
+
   useEffect(() => {
     const backAction = () => {
       Alert.alert('Hold on!', 'Are you sure you want to exit?', [
@@ -26,39 +27,69 @@ const Lobby = () => {
       return true;
     };
 
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      backAction
-    );
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
 
     return () => backHandler.remove();
   }, []);
 
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        setUserEmail(user.email);
+      } else {
+        setUserEmail('');
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   const getCategoryList = async () => {
+    if (!userEmail) {
+      console.log('User email is not set, skipping fetch');
+      return;
+    }
+
     setLoading(true);
-    const user = await client.getUserDetails();
-    const { data, error } = await supabase
-      .from('Category')
-      .select('*')
-      .eq('created_by', user.email);
-    console.log('Data', data);
-    setCategoryList(data);
-    data&&setLoading(false)
+    try {
+      const { data, error } = await supabase
+        .from('Category')
+        .select('*')
+        .eq('created_by', userEmail);
+
+      if (error) {
+        console.error('Error fetching categories:', error.message);
+        setLoading(false);
+        return;
+      }
+
+      console.log('Fetched categories:', data);
+      setCategoryList(data || []);
+    } catch (error) {
+      console.error('Error fetching categories:', error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     getCategoryList();
-  }, []);
+  }, [userEmail]);
 
   return (
-    <ScrollView style={styles.container} refreshControl={
-      <RefreshControl
-      onRefresh={()=>getCategoryList()}
-      refreshing={loading}
-      />
-    }>
+    <ScrollView
+      style={styles.container}
+      refreshControl={
+        <RefreshControl
+          onRefresh={getCategoryList}
+          refreshing={loading}
+          colors={[Colors.WHITE]}
+        />
+      }
+    >
       <Header />
-      <Chart categoryList={categoryList} />
+      <Chart categoryList={categoryList} userEmail={userEmail} />
       <CategoryList categoryList={categoryList} />
     </ScrollView>
   );
@@ -67,9 +98,9 @@ const Lobby = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.BLACK, // Use Colors.BLACK from your Colors file
-    padding: 10, // Adjust as needed
-    marginTop:30
+    backgroundColor: Colors.BLACK,
+    padding: 10,
+    marginTop: 30,
   },
 });
 

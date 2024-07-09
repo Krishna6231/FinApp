@@ -1,36 +1,71 @@
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, ToastAndroid } from 'react-native'
-import React, { useState } from 'react'
-import Colors from '../assets/Colors'
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ToastAndroid } from 'react-native';
+import Colors from '../assets/Colors';
 import ColorPicker from './ColorPicker';
 import { supabase } from '../SupabaseConfig';
-import { client } from '../KindeConfig';
-import CategoryList from './CategoryList';
-export default function Expense() {
+import { getCurrentUser } from '../FirebaseConfig';
 
+export default function Expense() {
   const [ename, setEname] = useState('');
   const [amount, setAmount] = useState('');
   const [selectedColor, setSelectedColor] = useState(Colors.PRIMARY);
   const [selectedIcon, setSelectedIcon] = useState('');
+  const [userEmail, setUserEmail] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
+  useEffect(() => {
+    fetchUserEmail();
+  }, []);
 
-const onCreateCategory= async()=> {
-  const user= await client.getUserDetails();
-const { data, error } = await supabase
-.from('Category')
-.insert({
-   name: ename,
-   budget: amount ,
-   color: selectedColor,
-  icon: selectedIcon,
-   created_by: user.email 
-})
-.select()
-console.log(data);
-if(data){
-    ToastAndroid.show('Category Created', ToastAndroid.SHORT)
-}
-        
-}
+  const fetchUserEmail = async () => {
+    try {
+      const email = await getCurrentUser();
+      setUserEmail(email);
+    } catch (error) {
+      console.error('Error fetching user email:', error.message);
+      ToastAndroid.show('Error fetching user data', ToastAndroid.SHORT);
+    }
+  };
+
+  const onCreateCategory = async () => {
+    if (!userEmail) {
+      ToastAndroid.show('User email not available', ToastAndroid.SHORT);
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const { data, error } = await supabase
+        .from('Category')
+        .insert({
+          name: ename,
+          budget: parseFloat(amount), // Ensure amount is a number
+          color: selectedColor,
+          icon: selectedIcon,
+          created_by: userEmail
+        });
+
+      if (error) {
+        throw error;
+      }
+
+      console.log('Category created:', data);
+      ToastAndroid.show('Category Created', ToastAndroid.SHORT);
+
+      // Clear input fields after successful creation
+      setEname('');
+      setAmount('');
+      setSelectedColor(Colors.PRIMARY);
+      setSelectedIcon('');
+    } catch (error) {
+      console.error('Error creating category:', error.message);
+      ToastAndroid.show('Error creating category', ToastAndroid.SHORT);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
 
   return (
     <View style={styles.container}>
@@ -66,16 +101,14 @@ if(data){
         onChangeText={(v)=>setAmount(v)}
       />
       <TouchableOpacity
-
-      disabled={!selectedColor&&!selectedIcon&&!ename&&!amount}
-        style={styles.button} onPress={onCreateCategory} color={Colors.BLACK} >
-        <Text style={{
-          color: Colors.WHITE,
-          fontSize: 16,
-          textAlign: 'center'
-        }}>Add Expense</Text>
+        disabled={isLoading || !selectedColor || !selectedIcon || !ename || !amount || !userEmail}
+        style={[styles.button, { opacity: isLoading ? 0.5 : 1 }]} 
+        onPress={onCreateCategory}
+      >
+        <Text style={styles.buttonText}>
+          {isLoading ? 'Adding...' : 'Add Expense'}
+        </Text>
       </TouchableOpacity>
-
     </View>
   )
 }
@@ -113,13 +146,17 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     borderRadius: 5,
   },
+  buttonText: {
+    color: Colors.WHITE,
+    fontSize: 16,
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+
   button: {
     backgroundColor: '#000',
-
     padding: 14,
     top: 10,
     borderRadius: 5
-
   },
-
 });

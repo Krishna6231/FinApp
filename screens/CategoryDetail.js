@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Modal, FlatList } from 'react-native';
-import { Feather } from '@expo/vector-icons';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Modal, FlatList, Alert } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { supabase } from '../SupabaseConfig';
-import Colors from '../assets/Colors';
 
-const colorOptions = ['#0077c2', '#00aaff', '#00e676', '#ff5252', '#ff1744'];
+const colorOptions = ['#0077c2', '#00aaff', '#00e676', '#ff5252', '#ff1744', '#581845', '#DAF7A6', '#33FF57', '#33FFDA'];
 
 export default function CategoryDetail() {
   const route = useRoute();
@@ -16,9 +14,8 @@ export default function CategoryDetail() {
   const [budget, setBudget] = useState(category.budget.toString());
   const [color, setColor] = useState(category.color);
 
-  const [isNameEditable, setIsNameEditable] = useState(false);
-  const [isBudgetEditable, setIsBudgetEditable] = useState(false);
-  const [isColorEditable, setIsColorEditable] = useState(false);
+  const [isNameEditable, setIsNameEditable] = useState(true);
+  const [isBudgetEditable, setIsBudgetEditable] = useState(true);
   const [colorModalVisible, setColorModalVisible] = useState(false);
 
   const handleUpdate = async () => {
@@ -49,7 +46,6 @@ export default function CategoryDetail() {
     }
   };
 
-  
   const renderColorOption = ({ item }) => (
     <TouchableOpacity onPress={() => { setColor(item); setColorModalVisible(false); }}>
       <View style={[styles.colorOption, { backgroundColor: item }]} />
@@ -59,21 +55,16 @@ export default function CategoryDetail() {
   return (
     <View style={styles.container}>
       <View style={styles.row}>
-        <View style={[styles.colorBox, { backgroundColor: color }]} />
-        <Text style={styles.label}>name</Text>
+        <Text style={styles.label}>Name   :</Text>
         <TextInput
           style={[styles.input, isNameEditable && styles.editableInput]}
           value={name}
           onChangeText={setName}
           editable={isNameEditable}
         />
-        
-        <TouchableOpacity onPress={() => setIsNameEditable(!isNameEditable)}>
-          <Feather name="edit" size={24} color={Colors.WHITE} />
-        </TouchableOpacity>
       </View>
       <View style={styles.row}>
-        <Text style={styles.label}>Budget: </Text>
+        <Text style={styles.label}>Budget :</Text>
         <TextInput
           style={[styles.input, isBudgetEditable && styles.editableInput]}
           value={budget}
@@ -81,17 +72,11 @@ export default function CategoryDetail() {
           onChangeText={setBudget}
           editable={isBudgetEditable}
         />
-        <TouchableOpacity onPress={() => setIsBudgetEditable(!isBudgetEditable)}>
-          <Feather name="edit" size={24} color={Colors.WHITE} />
-        </TouchableOpacity>
       </View>
       <View style={styles.row}>
-        <Text style={styles.label}>Color: </Text>
+        <Text style={styles.label}>Color    :</Text>
         <TouchableOpacity onPress={() => setColorModalVisible(true)}>
           <View style={[styles.colorBox, { backgroundColor: color }]} />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => setIsColorEditable(!isColorEditable)}>
-          <Feather name="edit" size={24} color={Colors.WHITE} />
         </TouchableOpacity>
       </View>
 
@@ -126,53 +111,54 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: Colors.BLACK,
+    backgroundColor: 'black',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
+    width: '100%',
   },
   label: {
-    color: Colors.WHITE,
-    fontSize: 16,
+    color: 'white',
+    fontSize: 20,
+    marginRight: 10,
   },
   input: {
     flex: 1,
-    color: Colors.WHITE,
+    color: 'black',
     padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.WHITE,
+    backgroundColor: 'gray',
+    borderRadius: 5,
   },
   editableInput: {
-    backgroundColor: Colors.GRAY,
+    backgroundColor: 'white',
   },
-  colorBox: {
-    width: 24,
-    height: 24,
-    borderRadius: 4,
-    marginRight: 10,
-  },
+  
   updateButton: {
-    backgroundColor: Colors.GREEN,
+    backgroundColor: 'white',
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',
     marginTop: 20,
+    width: '100%',
   },
   updateButtonText: {
-    color: Colors.WHITE,
+    color: 'black',
     fontSize: 16,
   },
   deleteButton: {
-    backgroundColor: Colors.RED,
+    backgroundColor: 'red',
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 10,
+    width: '100%',
   },
   deleteButtonText: {
-    color: Colors.WHITE,
+    color: 'white',
     fontSize: 16,
   },
   modalBackground: {
@@ -183,7 +169,7 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     width: '80%',
-    backgroundColor: Colors.WHITE,
+    backgroundColor: 'black',
     padding: 20,
     borderRadius: 10,
     alignItems: 'center',
@@ -191,6 +177,7 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 18,
     marginBottom: 20,
+    color: 'white',
   },
   colorOption: {
     width: 40,
@@ -200,11 +187,11 @@ const styles = StyleSheet.create({
   },
   modalCloseButton: {
     marginTop: 20,
-    backgroundColor: Colors.GRAY,
+    backgroundColor: 'gray',
     padding: 10,
     borderRadius: 5,
   },
   modalCloseButtonText: {
-    color: Colors.BLACK,
+    color: 'white',
   },
 });
