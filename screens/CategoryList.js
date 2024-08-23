@@ -16,7 +16,9 @@ const CategoryList = ({ categoryList }) => {
       <Text style={styles.title}>List</Text>
       <View>
       {categoryList.length > 0 ? (
-          categoryList.map((category, index) => (
+        categoryList.map((category, index) => {
+          console.log(`Category: ${category.name}, Budget: ${category.budget}`);
+          return (
             <TouchableOpacity
               key={index}
               style={styles.categoryItem}
@@ -27,14 +29,16 @@ const CategoryList = ({ categoryList }) => {
               </View>
               <View style={styles.subContainer}>
                 <Text style={styles.categoryName}>{category.name}</Text>
-                <Text style={styles.categoryBudget}>₹{category.budget}</Text>
+                <Text style={[styles.categoryBudget, {fontFamily: 'Roboto'}]}>₹{category.budget}</Text>
+
               </View>
             </TouchableOpacity>
-          ))
-        ) : (
-          <Text style={styles.noDataText}>Add expenses to view the list</Text>
-        )}
-      </View>
+          );
+        })
+      ) : (
+        <Text style={styles.noDataText}>Add expenses to view the list</Text>
+      )}
+    </View>
     </View>
   );
 };
@@ -70,21 +74,22 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
   subContainer: {
-    display:'flex',
-    flexDirection:'row',
-    alignItems:'center',
-    justifyContent:'space-between',
-    width:'85%'
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '87%', // Ensure the container takes full width
+    flexWrap: 'nowrap', // Prevent text wrapping
+  },
+  categoryBudget: {
+    color: Colors.WHITE,
+    fontSize: 21,
+    textAlign: 'right', // Ensure the text aligns properly
+    overflow: 'visible', // Prevent clipping
   },
   categoryName: {
     color: Colors.WHITE,
     fontWeight: 'bold',
     fontSize: 21,
-  },
-  categoryBudget: {
-    color: Colors.WHITE,
-    fontSize: 21,
-    
   },
   noDataText: {
     color: Colors.GRAY,
